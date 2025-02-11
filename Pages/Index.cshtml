@@ -1,0 +1,70 @@
+﻿@page
+@model WebApplication1.Pages.IndexModel
+@{
+    ViewData["Title"] = "Job Agency Page";
+
+    // Retrieve session data for the user
+    var userEmail = HttpContext.Session.GetString("UserEmail");
+    var userName = HttpContext.Session.GetString("UserName");
+    var sessionStartTime = HttpContext.Session.GetString("SessionStartTime");
+    var sessionId = HttpContext.Session.GetString("SessionId");
+
+    // User personal information from Session
+    var firstName = HttpContext.Session.GetString("FirstName");
+    var lastName = HttpContext.Session.GetString("LastName");
+    var dob = HttpContext.Session.GetString("DateOfBirth");
+    var gender = HttpContext.Session.GetString("Gender");
+    var nric = HttpContext.Session.GetString("NRIC");
+    var whoami = HttpContext.Session.GetString("whoami");
+    var decryptedPassword = HttpContext.Session.GetString("decryptedPassword");
+
+}
+
+@if (userEmail != null)
+{
+    <div class="user-info">
+        <h3>Welcome, @userEmail!</h3>
+        <p>Email: @userEmail</p>
+        <p>NRIC: @nric</p>
+        <p>First Name: @firstName</p>
+        <p>Last Name: @lastName</p>
+        <p>Date of Birth: @dob</p>
+        <p>Gender: @gender</p>
+        <p>Who Am I: @whoami</p>
+        <p>Session ID: @sessionId</p>
+        <p>Session Start Time: @sessionStartTime</p>
+    </div>
+}
+else
+{
+    <p>Please log in to see your details.</p>
+}
+
+<h1>Welcome to the Job Agency</h1>
+
+<!-- Job Agency Details Section -->
+<div class="job-agency-details">
+    <h2>About Us</h2>
+    <p>We are a leading job agency dedicated to connecting skilled professionals with top employers. Our goal is to help job seekers find their ideal job and assist employers in hiring the best talent for their needs.</p>
+
+    <h3>Our Services</h3>
+    <ul>
+        <li>Job Placement Assistance</li>
+        <li>Resume Writing and Interview Coaching</li>
+        <li>Career Counseling</li>
+        <li>Temporary and Permanent Staffing Solutions</li>
+    </ul>
+
+    <h3>Contact Information</h3>
+    <p>For inquiries or to get started, please reach out to us:</p>
+    <ul>
+        <li>Email: <a href="mailto:info@jobagency.com">info@jobagency.com</a></li>
+        <li>Phone: (123) 456-7890</li>
+        <li>Address: 123 Job St, City, Country</li>
+    </ul>
+</div>
+
+<!-- Call-to-Action Button Section -->
+<div class="cta">
+    <a href="/Jobs" class="btn btn-primary">View Job Listings</a>
+</div>

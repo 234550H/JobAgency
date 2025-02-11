@@ -1,0 +1,112 @@
+﻿@page
+@using Microsoft.AspNetCore.Identity
+@model WebApplication1.Pages.LoginModel
+@inject SignInManager<IdentityUser> SignInManager
+
+@{
+    if (User.Identity.IsAuthenticated)
+    {
+        Response.Redirect("/Index"); // Redirect logged-in users to Home
+    }
+}
+
+<head>
+    <script src="https://www.google.com/recaptcha/api.js?render=6LeTptAqAAAAAPFBJUIvU5ZRuRezrjDGbpijDZvV"></script>
+</head>
+
+<div class="container mt-5">
+    <div class="row justify-content-center align-items-center">
+        <div class="col-sm-12 col-md-12 col-lg-4">
+            <h1 class="mb-3">Login</h1>
+
+            @if (!User.Identity.IsAuthenticated)
+            {
+                @* Display lockout message if available *@
+                @if (!string.IsNullOrEmpty(Model.LockoutMessage))
+                {
+                    <div class="alert alert-danger">
+                        @Model.LockoutMessage
+                    </div>
+                }
+
+                <form method="post" id="loginForm">
+                    <div class="text-danger" asp-validation-summary="All"></div> <!-- Display all errors -->
+
+                    <div class="mb-3">
+                        <label class="form-label" asp-for="LModel.Email">Email Address</label>
+                        <input type="text" asp-for="LModel.Email" class="form-control" required />
+                        <span asp-validation-for="LModel.Email" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" asp-for="LModel.Password">Password</label>
+                        <input type="password" asp-for="LModel.Password" class="form-control" required />
+                        <span asp-validation-for="LModel.Password" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" asp-for="LModel.RememberMe" class="form-check-input" />
+                        <label class="form-check-label" asp-for="LModel.RememberMe">Remember Me?</label>
+                    </div>
+
+                 
+                    <div style="margin-bottom: 20px;">
+                        <a href="/ForgetPassword">Reset your password?</a>
+                    </div>
+
+                    @* Google reCAPTCHA *@
+                    <input type="hidden" id="recaptchaResponse" name="recaptchaResponse" />
+
+                    <div class="mb-3">
+                        <button type="submit" class="btn btn-primary" id="submitBtn">Login</button>
+                    </div>
+                </form>
+            }
+        </div>
+    </div>
+</div>
+
+<script>
+    window.onload = function() {
+        // Ensure currentSessionId is populated correctly
+        const sessionId = sessionStorage.getItem("SessionId");
+        const currentSessionId = '@(HttpContext.Session.GetString("SessionId") ?? "")'; // Render default empty string if session ID is null
+
+        console.log("Client Session ID: ", sessionId); // Debugging
+        console.log("Server Session ID: ", currentSessionId); // Debugging
+
+        if (sessionId && sessionId !== currentSessionId) {
+            // If session IDs don't match, force logout
+            window.location.href = '/Logout'; // Redirect to logout page
+        }
+    }
+</script>
+
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const loginForm = document.getElementById("loginForm");
+
+        if (!loginForm) {
+            console.error("Form not found.");
+            return;
+        }
+
+        loginForm.addEventListener("submit", function (event) {
+            event.preventDefault(); // Prevent default form submission
+
+            grecaptcha.ready(function () {
+                grecaptcha.execute("6LeTptAqAAAAAPFBJUIvU5ZRuRezrjDGbpijDZvV", { action: "login" })
+                    .then(function (token) {
+                        document.getElementById("recaptchaResponse").value = token;
+                        loginForm.submit(); // Submit the form after reCAPTCHA verification
+                    })
+                    .catch(function (error) {
+                        console.error("reCAPTCHA error:", error);
+                        alert("reCAPTCHA verification failed. Please try again.");
+                    });
+            });
+        });
+    });
+</script>

@@ -1,0 +1,154 @@
+﻿@page
+@model WebApplication1.Pages.RegisterModel
+@{
+}
+
+<head>
+    <script src="https://www.google.com/recaptcha/api.js?render=6LeTptAqAAAAAPFBJUIvU5ZRuRezrjDGbpijDZvV"></script>
+</head>
+
+<div class="container mt-5">
+    <div class="row justify-content-center align-items-center">
+        <div class="col-sm-12 col-md-12 col-lg-6">
+            <h1 class="mb-3">Register</h1>
+
+            <form method="post" enctype="multipart/form-data" id="register-form">
+                <div asp-validation-summary="All" class="text-danger"></div>
+
+                <!-- First Name -->
+                <div class="mb-3">
+                    <label class="form-label" asp-for="RModel.FirstName">First Name</label>
+                    <input type="text" asp-for="RModel.FirstName" class="form-control" />
+                    <span asp-validation-for="RModel.FirstName" class="text-danger"></span>
+                </div>
+
+                <!-- Last Name -->
+                <div class="mb-3">
+                    <label class="form-label" asp-for="RModel.LastName">Last Name</label>
+                    <input type="text" asp-for="RModel.LastName" class="form-control" />
+                    <span asp-validation-for="RModel.LastName" class="text-danger"></span>
+                </div>
+
+                <!-- Gender -->
+                <div class="mb-3">
+                    <label class="form-label" asp-for="RModel.Gender">Gender</label>
+                    <select asp-for="RModel.Gender" class="form-control">
+                        <option value="">Select Gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                    </select>
+                    <span asp-validation-for="RModel.Gender" class="text-danger"></span>
+                </div>
+
+                <!-- Date of Birth -->
+                <div class="mb-3">
+                    <label class="form-label" asp-for="RModel.DateOfBirth">Date of Birth</label>
+                    <input type="date" asp-for="RModel.DateOfBirth" class="form-control" />
+                    <span asp-validation-for="RModel.DateOfBirth" class="text-danger"></span>
+                </div>
+
+                <!-- NRIC (Enter as Text) -->
+                <div class="mb-3">
+                    <label class="form-label" asp-for="RModel.NRIC">Enter NRIC</label>
+                    <input type="text" asp-for="RModel.NRIC" class="form-control" />
+                    <span asp-validation-for="RModel.NRIC" class="text-danger"></span>
+                </div>
+
+                <!-- Email Address -->
+                <div class="mb-3">
+                    <label class="form-label" asp-for="RModel.Email">Email Address</label>
+                    <input type="email" id="Email" asp-for="RModel.Email" class="form-control" />
+                    <span asp-validation-for="RModel.Email" class="text-danger"></span>
+                </div>
+
+                <!-- Password -->
+                <div class="mb-3">
+                    <label class="form-label" asp-for="RModel.Password">Password</label>
+                    <input type="password" id="Password" name="RModel.Password" asp-for="RModel.Password" class="form-control" />
+                    <span asp-validation-for="RModel.Password" class="text-danger"></span>
+                    <small id="password-feedback" class="form-text"></small>
+                </div>
+
+                <!-- Confirm Password -->
+                <div class="mb-3">
+                    <label class="form-label" asp-for="RModel.ConfirmPassword">Confirm Password</label>
+                    <input type="password" asp-for="RModel.ConfirmPassword" class="form-control" />
+                    <span asp-validation-for="RModel.ConfirmPassword" class="text-danger"></span>
+                </div>
+
+                <!-- Resume Upload -->
+                <div class="mb-3">
+                    <label class="form-label" for="ResumeFile">Upload Resume (.pdf, .docx)</label>
+                    <input type="file" asp-for="RModel.ResumeFile" class="form-control" accept=".pdf,.docx" />
+                    <span asp-validation-for="RModel.ResumeFile" class="text-danger"></span>
+                </div>
+
+                <!-- Who Am I? -->
+                <div class="mb-3">
+                    <label class="form-label" asp-for="RModel.WhoAmI">Tell Us About Yourself</label>
+                    <textarea asp-for="RModel.WhoAmI" class="form-control" rows="4"></textarea>
+                    <span asp-validation-for="RModel.WhoAmI" class="text-danger"></span>
+                </div>
+
+                <!-- reCaptcha widget -->
+                <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response" />
+
+                <!-- Submit Button -->
+                <div class="mb-3">
+                    <button type="submit" class="btn btn-primary">Register</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    // Password Validation
+    document.getElementById("Password").addEventListener("input", function () {
+        const password = this.value;
+        const feedback = document.getElementById("password-feedback");
+
+        const minLength = 12;
+        const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{12,}$/;
+
+        if (password.length < minLength) {
+            feedback.textContent = "Password must be at least 12 characters long.";
+            feedback.style.color = "red";
+        } else if (!regex.test(password)) {
+            feedback.textContent = "Password is weak. Include uppercase, lowercase, numbers, and special characters.";
+            feedback.style.color = "orange";
+        } else {
+            feedback.textContent = "Password is strong!";
+            feedback.style.color = "green";
+        }
+    });
+
+    // Handle form submission with reCaptcha
+    document.getElementById('register-form').addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent default form submission
+
+        grecaptcha.execute('6LeTptAqAAAAAPFBJUIvU5ZRuRezrjDGbpijDZvV', { action: 'submit' })
+            .then(function(token) {
+                // Append the reCaptcha token to the form
+                const form = document.getElementById('register-form');
+                let recaptchaInput = document.getElementById('recaptchaResponse');
+
+                if (!recaptchaInput) {
+                    recaptchaInput = document.createElement('input');
+                    recaptchaInput.type = 'hidden';
+                    recaptchaInput.id = 'recaptchaResponse';
+                    recaptchaInput.name = 'recaptchaResponse';
+                    form.appendChild(recaptchaInput);
+                }
+
+                recaptchaInput.value = token;
+                form.submit(); // Submit the form after setting the token
+            })
+            .catch(function(error) {
+                console.error("reCaptcha error:", error);
+            });
+    });
+</script>
+

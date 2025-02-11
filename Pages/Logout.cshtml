@@ -1,0 +1,21 @@
+﻿@page
+@model WebApplication1.Pages.LogoutModel
+@{
+}
+
+<form method="post">
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-sm-12 col-md-12 col-lg-4">
+                <p> Are you sure you want to logout? </p>
+                <p>
+                    <!-- Yes Button for Logout -->
+                    <button class="btn btn-primary" asp-page-handler="OnPostLogout">Yes</button>
+
+                    <!-- No Button to cancel Logout -->
+                    <button class="btn btn-light ml-5 border-dark" asp-page-handler="OnPostDontLogout">No</button>
+                </p>
+            </div>
+        </div>
+    </div>
+</form>

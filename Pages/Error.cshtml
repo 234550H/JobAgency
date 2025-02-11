@@ -1,0 +1,47 @@
+﻿@page "/Error/{statusCode:int?}"
+@model WebApplication1.Models.ErrorModel
+
+@{
+    ViewData["Title"] = "Error - Ace Job Agency Membership Service";
+    int statusCode = Model.StatusCode ?? 500; // Default to 500 if not provided
+}
+
+<div style="text-align: center; margin-top: 50px;">
+    <h1 class="text-danger" style="margin-top: 20px;">Oops! Something went wrong.</h1>
+
+    @if (statusCode == 404)
+    {
+        <h2 style="color: #d9534f;">The page you are looking for could not be found.</h2> <!-- Red color for 404 -->
+    }
+    else if (statusCode == 403)
+    {
+        <h2 style="color: #f0ad4e;">You do not have permission to access this page.</h2> <!-- Orange color for 403 -->
+    }
+    else if (statusCode == 500)
+    {
+        <h2 style="color: #5bc0de;">We’re sorry, an unexpected error occurred.</h2> <!-- Light blue color for 500 -->
+    }
+    else
+    {
+        <h2 style="color: #777;">An error occurred. Status code: @statusCode</h2> <!-- Grey color for other errors -->
+    }
+
+
+    @if (Model.ShowRequestId)
+    {
+        <p>
+            <strong>Request ID:</strong> <code>@Model.RequestId</code>
+        </p>
+    }
+
+    <p style="margin-top: 30px;">
+        Please try again later or contact our support team if the issue persists.
+    </p>
+    <p>
+        <strong>Email:</strong> <a href="mailto:support@acejobagency.com">support@acejobagency.com</a><br>
+    </p>
+
+    <p style="margin-top: 30px;">
+        <a href="/" class="btn btn-primary" style="padding: 10px 20px; font-size: 16px;">Go Back to Home</a>
+    </p>
+</div>
